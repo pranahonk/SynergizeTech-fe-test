@@ -26,10 +26,12 @@ const ModalBook = ({ book }: ModalBookProps) => {
 
   return (
     <>
-      <Button rightIcon={<InfoIcon fontSize="1.15rem" />} onClick={onOpen}>
+      <Button
+          rightIcon={<InfoIcon fontSize="1.15rem" />}
+          onClick={() => onOpen()}
+      >
         See Details
       </Button>
-
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent>

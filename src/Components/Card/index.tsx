@@ -23,7 +23,7 @@ const Card = ({ book, view}: CardProps) => {
     >
       <Box minW="150px">
         <Image
-          height="200px"
+          height="200"
           width="150"
           src={book?.img || "/generic-book.jpg"}
           alt={book.title}
