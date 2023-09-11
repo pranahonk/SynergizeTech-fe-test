@@ -1,4 +1,5 @@
 import {Box, Heading, Select} from "@chakra-ui/react";
+// @ts-ignore
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 
