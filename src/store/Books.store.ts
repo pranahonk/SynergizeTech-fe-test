@@ -4,7 +4,7 @@ import { Book } from '../types/book';
 import { RootState } from './store';
 
 
-const {getBooks, isLoading} = BookApi();
+const {getBooks} = BookApi();
 
 interface BooksProps {
   books: Book[];
@@ -25,10 +25,15 @@ const initialState:BooksProps = {
   terms: "",
 }
 
-export const getBooksWithTerms = createAsyncThunk<any,getBooksWithTermsProps>('books/getBooksWithTerms', async ({ terms,page}) => {
-  const response = await getBooks(terms,page);
-  return response;
-})
+export const getBooksWithTerms = createAsyncThunk<any, getBooksWithTermsProps>('books/getBooksWithTerms', async ({ terms, page }, thunkAPI) => {
+  try {
+    const response = await getBooks(terms, page);
+    return response;
+  } catch (error) {
+    // Handle errors here if needed
+    throw error;
+  }
+});
 
 export const BooksSlice = createSlice({
   name: 'books',
@@ -60,7 +65,7 @@ export const BooksSlice = createSlice({
           publisher: book.volumeInfo?.publisher,
           description: book.volumeInfo?.description,
           pageCount: book.volumeInfo?.pageCount,
-          publishDate: book.volumeInfo?.publishedDate
+          publishDate: book.volumeInfo?.publishedDate,
         }
       })
 

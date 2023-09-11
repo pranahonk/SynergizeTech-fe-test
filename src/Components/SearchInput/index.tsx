@@ -1,23 +1,36 @@
-import { SearchIcon } from "@chakra-ui/icons";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import useDebounce from "../../hooks/useDebounce";
-import {
-  cleanStates,
-  getBooksWithTerms,
-  setTerms,
-} from "../../store/Books.store";
-import { useAppDispatch } from "../../store/store";
+import React, {useEffect, useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {SearchIcon} from '@chakra-ui/icons';
+import {InputGroup, InputRightElement} from '@chakra-ui/react';
+import useDebounce from '../../hooks/useDebounce';
+import {cleanStates, getBooksWithTerms, setTerms,} from '../../store/Books.store';
+import {useAppDispatch} from '../../store/store';
 
 const SearchInput = () => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
+  const [error, setError] = useState('');
   const dispatch = useAppDispatch();
 
   const debounceSearch = useDebounce(search, 1000);
+    const {
+        register,
+        formState: { errors },
+        handleSubmit
+    } = useForm({
+        mode: "onChange" // "onChange"
+    });
 
   const handleSearch = async (terms: string) => {
     dispatch(setTerms(terms));
     dispatch(getBooksWithTerms({ page: 0, terms }));
+
+      if (search.length < 3) {
+          setError('Minimum length should be 3');
+      } else if (search.length > 36) {
+          setError('Maximum length should not exceed 36');
+      } else {
+          setError('');
+      }
   };
 
   useEffect(() => {
@@ -27,30 +40,37 @@ const SearchInput = () => {
     }
 
     dispatch(cleanStates());
-  }, [debounceSearch]);
+  }, [debounceSearch, dispatch, search]);
 
   return (
-    <InputGroup display="flex">
-      <InputRightElement alignContent="center" pointerEvents="none" top="4px">
-        <SearchIcon alignSelf="center" fontSize="22px" />
-      </InputRightElement>
-      <Input
-        size="lg"
-        border="3px solid"
-        type="text"
-        fontWeight="bold"
-        placeholder="Enter the book"
-        borderColor="gray.400"
-        focusBorderColor="gray.800"
-        _hover={{
-          border: "2px solid gray.400",
-        }}
-        onChange={(e) => setSearch(e.target.value)}
-        _placeholder={{
-          fontWeight: "bold",
-        }}
-      />
-    </InputGroup>
+      <>
+          <InputGroup display="flex">
+              <InputRightElement
+                  alignContent="center"
+                  pointerEvents="none"
+                  top="4px"
+              >
+                  <SearchIcon alignSelf="center" fontSize="22px" />
+              </InputRightElement>
+              <input
+                  className={`w-full h-[50px] min-w-0 outline-none outline-offset-2 relative appearance-none 
+                transition-[background-color,border-color,color,fill,stroke,opacity,box-shadow,transform] 
+                duration-['200ms'] text-["1.125rem"] font-bold rounded-["0.375rem"] border-[3px] 
+                border-solid border-["#DADADA"] placeholder-black`}
+                  placeholder="luo"
+                  {...register('search', {
+                      required: 'This is required',
+                      minLength: { value: 3, message: 'Minimum length should be 3' },
+                      maxLength: {value: 36, message: 'Maximum length should be not exceed 36' }
+                  })}
+                  onChange={(e) => setSearch(e.target.value)}
+              />
+          </InputGroup>
+          <div className="mb-[5px] text-red-400">
+              {errors.search && errors.search.message}
+              {error}
+          </div>
+      </>
   );
 };
 
