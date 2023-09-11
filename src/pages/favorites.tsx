@@ -30,12 +30,12 @@ const Home: NextPage = () => {
           {favorites.length > 0 ? (
             <>
               {favorites.map((book) => (
-                <Card key={book.id} book={book} />
+                <Card key={book.id} book={book} view="grid" />
               ))}
             </>
           ) : (
             <Text fontSize="1.2rem" mt="2rem" fontWeight="500">
-              Você não possui livros favoritados ;(
+                You don't have favorite books ;(
             </Text>
           )}
         </Box>

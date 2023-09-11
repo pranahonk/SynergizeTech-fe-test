@@ -10,7 +10,7 @@ import FavoriteReducer from "./Favorites.store";
 const store = configureStore({
   reducer: {
     books: BooksReducer,
-    favorites: FavoriteReducer
+    favorites: FavoriteReducer,
   },
 });
 
@@ -19,7 +19,7 @@ export type RootState = ReturnType<typeof store.getState>;
 
 export const RootReducer = combineReducers({
   books: BooksReducer,
-  favorites: FavoriteReducer
+  favorites: FavoriteReducer,
 })
 
 

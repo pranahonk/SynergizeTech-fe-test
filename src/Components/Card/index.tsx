@@ -5,13 +5,14 @@ import ModalBook from "../ModalBook";
 
 interface CardProps {
   book: Book;
+  view: string
 }
 
-const Card = ({ book }: CardProps) => {
+const Card = ({ book, view}: CardProps) => {
   // console.log(book)
   return (
     <Box
-      w="550px"
+      w={view === "grid" ? '550px' : "100%"}
       h="100%"
       bg="white"
       p="1rem"

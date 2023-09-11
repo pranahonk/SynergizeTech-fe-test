@@ -10,6 +10,8 @@ const SearchInput = () => {
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
   const dispatch = useAppDispatch();
+  const [startDate, setStartDate] = useState(new Date("2014/02/08"));
+  const [endDate, setEndDate] = useState(new Date("2024/04/08"))
 
   const debounceSearch = useDebounce(search, 1000);
     const {
@@ -56,7 +58,7 @@ const SearchInput = () => {
                   className={`w-full h-[50px] min-w-0 outline-none outline-offset-2 relative appearance-none 
                 transition-[background-color,border-color,color,fill,stroke,opacity,box-shadow,transform] 
                 duration-['200ms'] text-["1.125rem"] font-bold rounded-["0.375rem"] border-[3px] 
-                border-solid border-["#DADADA"] placeholder-black`}
+                border-solid border-["#DADADA"] placeholder-black py-[4px] px-[10px]`}
                   placeholder="luo"
                   {...register('search', {
                       required: 'This is required',

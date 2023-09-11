@@ -15,8 +15,7 @@ const Header = () => {
       gridTemplateColumns="1fr 1fr"
     >
       <Box display="flex" alignItems="center" fontSize="1.2rem" gap="0.5rem">
-        <Image height="40px" width="45px" src="/book.png" />
-        <Text fontWeight="bold">Search Books</Text>
+        <Text fontWeight="bold">SynergizeTech Books</Text>
       </Box>
 
       <Box justifySelf="flex-end" display="flex" gap="1.2rem">
@@ -35,7 +34,6 @@ const Header = () => {
             alignItems="baseline"
           >
             <Text mr="5px">Favorite</Text>
-            <Image width="10px" height="10x " src="/svg/heart-full.svg" />
           </Box>
         </Link>
       </Box>
