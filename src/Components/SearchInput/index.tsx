@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {SearchIcon} from '@chakra-ui/icons';
-import {InputGroup, InputRightElement} from '@chakra-ui/react';
+import {InputGroup, InputRightElement, FormErrorMessage} from '@chakra-ui/react';
 import useDebounce from '../../hooks/useDebounce';
 import {cleanStates, getBooksWithTerms, setTerms,} from '../../store/Books.store';
 import {useAppDispatch} from '../../store/store';
@@ -10,8 +10,6 @@ const SearchInput = () => {
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
   const dispatch = useAppDispatch();
-  const [startDate, setStartDate] = useState(new Date("2014/02/08"));
-  const [endDate, setEndDate] = useState(new Date("2024/04/08"))
 
   const debounceSearch = useDebounce(search, 1000);
     const {
@@ -67,11 +65,12 @@ const SearchInput = () => {
                   })}
                   onChange={(e) => setSearch(e.target.value)}
               />
+              {error && (
+                  <FormErrorMessage>
+                      {error}
+                  </FormErrorMessage>
+              )}
           </InputGroup>
-          <div className="mb-[5px] text-red-400">
-              {errors.search && errors.search.message}
-              {error}
-          </div>
       </>
   );
 };

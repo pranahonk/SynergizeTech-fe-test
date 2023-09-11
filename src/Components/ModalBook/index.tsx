@@ -39,7 +39,7 @@ const ModalBook = ({ book }: ModalBookProps) => {
           <ModalBody p="3rem 1rem">
             <Box display="flex" justifyContent="center">
               <Image
-                height="420px"
+                height="420"
                 width="280"
                 src={book?.img}
                 alt={book?.title}
@@ -101,8 +101,8 @@ const ModalBook = ({ book }: ModalBookProps) => {
               onClick={() => dispatch(addFavorite(book))}
             >
               <Image
-                width="25px"
-                height="25px"
+                width="25"
+                height="25"
                 src="/svg/heart-full.svg"
                 alt="favorito"
               />
