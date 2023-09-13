@@ -1,42 +1,63 @@
-import {Box, Heading, Select} from "@chakra-ui/react";
+import {Box, Heading, Select, useToast} from "@chakra-ui/react";
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 
 import type {NextPage} from "next";
 import SearchInput from "../Components/SearchInput";
 import {useAppDispatch, useAppSelector} from "../store/store";
-import {SelectBooks, filterBooks, filterYear} from "../store/Books.store";
+import {cleanStates, filterBooks, filterYear, SelectBooks, setBookFromData, setTerms} from "../store/Books.store";
 import Card from "../Components/Card";
 import Paginate from "../Components/Paginate";
 import {getFavorites} from "../store/Favorites.store";
 import {useEffect, useState} from "react";
+import {useQuery} from "react-query";
+import {BookApi} from "../services/BookApi";
+import useDebounce from "../hooks/useDebounce";
 
+
+interface ErrorType {
+    error: string;
+}
+
+interface data {
+
+}
 
 const Home: NextPage = () => {
-    const { books } = useAppSelector(SelectBooks);
+    const { books , terms,} = useAppSelector(SelectBooks);
+    const {getBooks, fetchTodos} = BookApi();
+    const toast = useToast();
     const dispatch = useAppDispatch();
     const circleCommonClasses = 'h-2.5 w-2.5 bg-current rounded-full';
-    const [isLoading, _] = useState(false);
     const [select, setSelect] = useState('');
     const [grid, setGrid] = useState('grid');
     const [startDate, setStartDate] = useState(new Date("2015/02/08"));
     const [endDate, setEndDate] = useState(new Date("2023/04/08"));
+    const [search, setSearch] = useState('');
+    const debounceSearch = useDebounce(search, 1000);
+    const [errorSearch, setErrorSearch] = useState('');
 
 
-
-    useEffect(()=>{
-        console.log(books);
-    }, [books])
-
-
-  useEffect(() => {
-    dispatch(getFavorites());
-  }, []);
+    const { data, refetch, isLoading , isFetching, error, status} = useQuery({
+        queryKey: ['getBooks'],
+        queryFn: () => getBooks(search, 0),
+        enabled: !!search,
+        // useErrorBoundary: (error) => error.response?.status >= 500,
+    });
 
 
-  useEffect(() => {
-      dispatch(filterBooks(select));
-  }, [select]);
+    const handleSearch = async (terms: string) => {
+        dispatch(setTerms(terms));
+        // dispatch(getBooksWithTerms({ page: 0, terms }));
+
+        if (search.length < 3) {
+            setErrorSearch('Minimum length should be 3');
+        } else if (search.length > 36) {
+            setErrorSearch('Maximum length should not exceed 36');
+        } else {
+            setErrorSearch('');
+        }
+    };
 
     const handleChange = ([newStartDate, newEndDate]: [any, any]) => {
         setStartDate(newStartDate);
@@ -45,17 +66,54 @@ const Home: NextPage = () => {
         dispatch(filterYear({newStartDate, newEndDate}));
     };
 
+    useEffect(() => {
+        if (search) {
+            handleSearch(search);
+            return;
+        }
+
+        dispatch(cleanStates());
+    }, [debounceSearch, dispatch, search]);
+
+    useEffect(() => {
+        dispatch(getFavorites());
+    }, []);
+
+
+    useEffect(() => {
+        dispatch(filterBooks(select));
+    }, [select]);
+
+    useEffect(() => {
+        dispatch(setBookFromData(data))
+
+    }, [data]);
 
     return (
     <Box p={{ base: "2rem 0.5rem", md: "1rem 2rem" }} flex="1 0  auto">
+
       <Heading textAlign="center" m="2rem 0">
           Search for your favorite book
       </Heading>
       <Box p="2rem">
-          <SearchInput />
+          <SearchInput onChange={(e)=>
+              setSearch(e.target.value)}
+                       error={errorSearch}
+          />
       </Box>
         {
-            books?.length > 0 && (
+            error && (
+                toast({
+                    title: String((error as ErrorType).error),
+                    position: 'top',
+                    isClosable: true,
+                    status: 'error',
+                    duration: 2000,
+                })
+            )
+        }
+        {
+           books.length > 0 && (
                 <div className="px-[2rem] grid grid-cols-5 grid-rows-1 gap-4">
                     <Select placeholder='Urutkan'
                             onChange={(e) => setSelect(e.target.value)}
@@ -94,14 +152,14 @@ const Home: NextPage = () => {
         paddingTop="2rem"
       >
           {
-              isLoading ? (
+              isFetching ? (
                   <div className='flex'>
                       <div className={`${circleCommonClasses} mr-1 animate-bounce`}></div>
                       <div className={`${circleCommonClasses} mr-1 animate-bounce200`}></div>
                       <div className={`${circleCommonClasses} animate-bounce400`}></div>
                   </div>
               ) : (
-                  books.map((book) => <Card key={book.id} book={book} view={grid} />)
+                 books.map((book) => <Card key={book.id} book={book} view={grid} />)
               )
           }
       </Box>

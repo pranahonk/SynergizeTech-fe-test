@@ -1,17 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {useForm} from 'react-hook-form';
 import {SearchIcon} from '@chakra-ui/icons';
-import {InputGroup, InputRightElement, FormErrorMessage} from '@chakra-ui/react';
-import useDebounce from '../../hooks/useDebounce';
-import {cleanStates, getBooksWithTerms, setTerms,} from '../../store/Books.store';
-import {useAppDispatch} from '../../store/store';
+import {FormErrorMessage, InputGroup, InputRightElement} from '@chakra-ui/react';
 
-const SearchInput = () => {
-  const [search, setSearch] = useState('');
-  const [error, setError] = useState('');
-  const dispatch = useAppDispatch();
+const SearchInput = ({onChange,error }) => {
 
-  const debounceSearch = useDebounce(search, 1000);
     const {
         register,
         formState: { errors },
@@ -20,29 +13,8 @@ const SearchInput = () => {
         mode: "onChange" // "onChange"
     });
 
-  const handleSearch = async (terms: string) => {
-    dispatch(setTerms(terms));
-    dispatch(getBooksWithTerms({ page: 0, terms }));
 
-      if (search.length < 3) {
-          setError('Minimum length should be 3');
-      } else if (search.length > 36) {
-          setError('Maximum length should not exceed 36');
-      } else {
-          setError('');
-      }
-  };
-
-  useEffect(() => {
-    if (search) {
-      handleSearch(search);
-      return;
-    }
-
-    dispatch(cleanStates());
-  }, [debounceSearch, dispatch, search]);
-
-  return (
+    return (
       <>
           <InputGroup display="flex">
               <InputRightElement
@@ -63,7 +35,7 @@ const SearchInput = () => {
                       minLength: { value: 3, message: 'Minimum length should be 3' },
                       maxLength: {value: 36, message: 'Maximum length should be not exceed 36' }
                   })}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={onChange}
               />
               {error && (
                   <FormErrorMessage>

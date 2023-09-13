@@ -45,6 +45,19 @@ export const getBooksWithTerms = createAsyncThunk<any, getBooksWithTermsProps>('
   }
 });
 
+const formatBooks = (items: any[], totalItemsPerPage: number) => {
+  return items.map((book: any) => ({
+    id: book.id,
+    img: book.volumeInfo?.imageLinks?.thumbnail,
+    title: book.volumeInfo?.title,
+    authors: String(book.volumeInfo?.authors).replaceAll(",", " "),
+    publisher: book.volumeInfo?.publisher,
+    description: book.volumeInfo?.description,
+    pageCount: book.volumeInfo?.pageCount,
+    publishDate: book.volumeInfo?.publishedDate,
+  }));
+};
+
 export const BooksSlice = createSlice({
   name: 'books',
   initialState,
@@ -113,41 +126,35 @@ export const BooksSlice = createSlice({
 
         state.books = filteredYearBooks;
       }
-    }
-  },
-  extraReducers: (builder: any) => {
-    console.log(builder);
-    builder.addCase(getBooksWithTerms.fulfilled, (state: any, action: any) => {
+    },
+    setBookFromData : (state, action): void => {
 
-      console.log(action);
-
-      if(action.payload.totalItems  === 0) {
-        state.books = [];
-        return;
+      if (action.payload?.totalItems && action.payload?.items) {
+        if (action.payload.totalItems === 0) {
+          state.books = [];
+          return;
+        }
+        state.books = formatBooks(action.payload.items, state.totalItemsPerPage);
+        state.totalPages = Math.ceil(action.payload.totalItems / state.totalItemsPerPage);
       }
 
-      const formatBooks = action.payload.items.map((book: any) => {
-        return {
-          id: book.id,
-          img: book.volumeInfo?.imageLinks?.thumbnail,
-          title: book.volumeInfo?.title,
-          authors: String(book.volumeInfo?.authors).replaceAll(","," "),
-          publisher: book.volumeInfo?.publisher,
-          description: book.volumeInfo?.description,
-          pageCount: book.volumeInfo?.pageCount,
-          publishDate: book.volumeInfo?.publishedDate,
-        }
-      });
+    },
+  },
+  extraReducers: (builder: any) => {
+    builder
+        .addCase(getBooksWithTerms.fulfilled, (state: any, action: any) => {
+          if (action.payload.totalItems === 0) {
+            state.books = [];
+            return;
+          }
+          state.books = formatBooks(action.payload.items, state.totalItemsPerPage);
+          state.totalPages = Math.ceil(action.payload.totalItems / state.totalItemsPerPage);
+        });
+  },
 
-      console.log(formatBooks);
-
-      state.books = formatBooks;
-      state.totalPages = Math.ceil(action.payload.totalItems / state.totalItemsPerPage);
-    })
-  }
 })
 
-export const {setTerms,cleanStates, filterBooks, filterYear } = BooksSlice.actions;
+export const {setTerms,cleanStates, filterBooks, setBookFromData, filterYear } = BooksSlice.actions;
 export const SelectBooks = (state: RootState) => state.books;
 
 export default BooksSlice.reducer;
