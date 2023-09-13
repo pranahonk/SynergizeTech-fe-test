@@ -2,6 +2,7 @@ import { createSlice ,createAsyncThunk, PayloadAction, current} from '@reduxjs/t
 import { BookApi} from '../services/BookApi';
 import { Book } from '../types/book';
 import { RootState } from './store';
+import { useQuery } from "react-query";
 
 
 const {getBooks} = BookApi();
@@ -36,9 +37,10 @@ interface payloadDates{
 export const getBooksWithTerms = createAsyncThunk<any, getBooksWithTermsProps>('books/getBooksWithTerms', async ({ terms, page }, thunkAPI) => {
   try {
     const response = await getBooks(terms, page);
+
     return response;
   } catch (error) {
-    // Handle errors here if needed
+    // Handle errors here if needed;
     throw error;
   }
 });
@@ -114,7 +116,10 @@ export const BooksSlice = createSlice({
     }
   },
   extraReducers: (builder: any) => {
+    console.log(builder);
     builder.addCase(getBooksWithTerms.fulfilled, (state: any, action: any) => {
+
+      console.log(action);
 
       if(action.payload.totalItems  === 0) {
         state.books = [];
@@ -132,7 +137,9 @@ export const BooksSlice = createSlice({
           pageCount: book.volumeInfo?.pageCount,
           publishDate: book.volumeInfo?.publishedDate,
         }
-      })
+      });
+
+      console.log(formatBooks);
 
       state.books = formatBooks;
       state.totalPages = Math.ceil(action.payload.totalItems / state.totalItemsPerPage);

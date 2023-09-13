@@ -19,22 +19,12 @@ const Header = () => {
       </Box>
 
       <Box justifySelf="flex-end" display="flex" gap="1.2rem">
-        <Link href="/" passHref>
-          <Box as="a" fontWeight="bold" color="gray.500">
-            <Text>Home</Text>
-          </Box>
+        <Link href="/" passHref className="font-bold text-[#999999] border-slate-200 bg-transparent">
+          Home
         </Link>
 
-        <Link href="/favorites" passHref>
-          <Box
-            as="a"
-            fontWeight="bold"
-            color="gray.500"
-            display="flex"
-            alignItems="baseline"
-          >
-            <Text mr="5px">Favorite</Text>
-          </Box>
+        <Link href="/favorites" passHref className="font-bold text-[#999999] border-slate-200 bg-transparent">
+          Favorite
         </Link>
       </Box>
     </Box>

@@ -1,5 +1,4 @@
 import {Box, Heading, Select} from "@chakra-ui/react";
-// @ts-ignore
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -22,6 +21,12 @@ const Home: NextPage = () => {
     const [grid, setGrid] = useState('grid');
     const [startDate, setStartDate] = useState(new Date("2015/02/08"));
     const [endDate, setEndDate] = useState(new Date("2023/04/08"));
+
+
+
+    useEffect(()=>{
+        console.log(books);
+    }, [books])
 
 
   useEffect(() => {
