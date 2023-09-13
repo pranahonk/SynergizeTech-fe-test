@@ -19,10 +19,6 @@ interface ErrorType {
     error: string;
 }
 
-interface data {
-
-}
-
 const Home: NextPage = () => {
     const { books , terms,} = useAppSelector(SelectBooks);
     const {getBooks, fetchTodos} = BookApi();
@@ -96,10 +92,7 @@ const Home: NextPage = () => {
           Search for your favorite book
       </Heading>
       <Box p="2rem">
-          <SearchInput onChange={(e)=>
-              setSearch(e.target.value)}
-                       error={errorSearch}
-          />
+          <SearchInput onChange={(e:any)=> setSearch(e.target.value)} error={errorSearch} />
       </Box>
         {
             error && (
@@ -139,10 +132,7 @@ const Home: NextPage = () => {
                     </Select>
                 </div>
             )
-
         }
-
-
       <Box
         margin="0 auto"
         display="flex"
