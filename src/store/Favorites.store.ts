@@ -38,7 +38,7 @@ export const FavoriteSlice = createSlice({
     },
 
     getFavorites: (state) => {
-      var books = JSON.parse(localStorage.getItem('books') || '[]');
+      const books = JSON.parse(localStorage.getItem('books') || '[]');
       state.favorites = books;
     },
 

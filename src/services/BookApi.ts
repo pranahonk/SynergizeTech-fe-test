@@ -20,7 +20,7 @@ export function BookApi() {
   }
   const getBooks = async (terms: string, page: number) => {
     try {
-      const response : any = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${terms}&maxResults=12&startIndex=${page}`, {
+      const response : any = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${terms}&key=${API_KEY}&maxResults=12&startIndex=${page}`, {
         timeout: 2000, // Set a 2000 ms (2-second) timeout
       });
 

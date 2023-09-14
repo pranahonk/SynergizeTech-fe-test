@@ -3,8 +3,7 @@ import {Controller, useForm} from 'react-hook-form';
 import {SearchIcon} from '@chakra-ui/icons';
 import {FormErrorMessage, InputGroup, InputRightElement} from '@chakra-ui/react';
 
-const SearchInput = ({onChange,error }) => {
-
+const SearchInput = ({onChange }) => {
     const {
         register,
         formState: { errors },
@@ -14,11 +13,11 @@ const SearchInput = ({onChange,error }) => {
         mode: "onChange" // "onChange"
     });
 
-    console.log(errors)
-
-
     return (
       <>
+          <FormErrorMessage>
+              Minimum length should be 3
+          </FormErrorMessage>
           <InputGroup display="flex">
               <InputRightElement
                   alignContent="center"
@@ -42,19 +41,30 @@ const SearchInput = ({onChange,error }) => {
                           {...register('search', {
                               required: 'This is required',
                               minLength: { value: 3, message: 'Minimum length should be 3' },
-                              maxLength: {value: 36, message: 'Maximum length should be not exceed 36' }
+                              maxLength: {value: 36, message: 'Maximum length should be not exceed 36' },
+                              onChange: (e): void => {
+                                  onChange(e)
+                              }
                           })}
-                          onChange={onChange}
                       />
                   )}
               />
-
-              {errors.search && (
-                  <FormErrorMessage>
-                      required
-                  </FormErrorMessage>
-              )}
           </InputGroup>
+          {errors.search?.type === "minLength" && (
+              <p className="text-red-500">
+                  Minimum length should be 3
+              </p>
+          )}
+          {errors.search?.type === "required" && (
+              <p className="text-red-500">
+                  This is required
+              </p>
+          )}
+          {errors.search?.type === "maxLength" && (
+              <p className="text-red-500">
+                  Maximum length should be not exceed 36
+              </p>
+          )}
       </>
   );
 };

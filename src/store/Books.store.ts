@@ -1,8 +1,8 @@
-import { createSlice ,createAsyncThunk, PayloadAction, current} from '@reduxjs/toolkit';
-import { BookApi} from '../services/BookApi';
-import { Book } from '../types/book';
-import { RootState } from './store';
-import { useQuery } from "react-query";
+import {createAsyncThunk, createSlice, current, PayloadAction} from '@reduxjs/toolkit';
+import {BookApi} from '../services/BookApi';
+import {Book} from '../types/book';
+import {RootState} from './store';
+import {util} from "../services/util";
 
 
 const {getBooks} = BookApi();
@@ -44,19 +44,6 @@ export const getBooksWithTerms = createAsyncThunk<any, getBooksWithTermsProps>('
     throw error;
   }
 });
-
-const formatBooks = (items: any[], totalItemsPerPage: number) => {
-  return items.map((book: any) => ({
-    id: book.id,
-    img: book.volumeInfo?.imageLinks?.thumbnail,
-    title: book.volumeInfo?.title,
-    authors: String(book.volumeInfo?.authors).replaceAll(",", " "),
-    publisher: book.volumeInfo?.publisher,
-    description: book.volumeInfo?.description,
-    pageCount: book.volumeInfo?.pageCount,
-    publishDate: book.volumeInfo?.publishedDate,
-  }));
-};
 
 export const BooksSlice = createSlice({
   name: 'books',
@@ -134,7 +121,7 @@ export const BooksSlice = createSlice({
           state.books = [];
           return;
         }
-        state.books = formatBooks(action.payload.items, state.totalItemsPerPage);
+        state.books = util.formatBooks(action.payload.items, state.totalItemsPerPage);
         state.totalPages = Math.ceil(action.payload.totalItems / state.totalItemsPerPage);
       }
 
@@ -147,7 +134,7 @@ export const BooksSlice = createSlice({
             state.books = [];
             return;
           }
-          state.books = formatBooks(action.payload.items, state.totalItemsPerPage);
+          state.books = util.formatBooks(action.payload.items, state.totalItemsPerPage);
           state.totalPages = Math.ceil(action.payload.totalItems / state.totalItemsPerPage);
         });
   },

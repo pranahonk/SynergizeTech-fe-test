@@ -1,5 +1,4 @@
 import { Box, Text } from "@chakra-ui/react";
-import Image from "next/image";
 import Link from "next/link";
 
 const Header = () => {
@@ -25,6 +24,10 @@ const Header = () => {
 
         <Link href="/favorites" passHref className="font-bold text-[#999999] border-slate-200 bg-transparent">
           Favorite
+        </Link>
+
+        <Link href="/recommendation" passHref className="font-bold text-[#999999] border-slate-200 bg-transparent">
+          Recommendation
         </Link>
       </Box>
     </Box>

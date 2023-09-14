@@ -31,7 +31,6 @@ const Home: NextPage = () => {
     const [endDate, setEndDate] = useState(new Date("2023/04/08"));
     const [search, setSearch] = useState('');
     const debounceSearch = useDebounce(search, 1000);
-    const [errorSearch, setErrorSearch] = useState('');
 
 
     const { data, refetch, isLoading , isFetching, error, status} = useQuery({
@@ -45,14 +44,6 @@ const Home: NextPage = () => {
     const handleSearch = async (terms: string) => {
         dispatch(setTerms(terms));
         // dispatch(getBooksWithTerms({ page: 0, terms }));
-
-        if (search.length < 3) {
-            setErrorSearch('Minimum length should be 3');
-        } else if (search.length > 36) {
-            setErrorSearch('Maximum length should not exceed 36');
-        } else {
-            setErrorSearch('');
-        }
     };
 
     const handleChange = ([newStartDate, newEndDate]: [any, any]) => {
@@ -92,7 +83,7 @@ const Home: NextPage = () => {
           Search for your favorite book
       </Heading>
       <Box p="2rem">
-          <SearchInput onChange={(e:any)=> setSearch(e.target.value)} error={errorSearch} />
+          <SearchInput onChange={(e:any)=> setSearch(e.target.value)} />
       </Box>
         {
             error && (
